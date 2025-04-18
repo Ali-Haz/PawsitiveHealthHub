@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PawsitiveHealthHub.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace PawsitiveHealthHub.Models
 {
@@ -8,13 +11,22 @@ namespace PawsitiveHealthHub.Models
         public int AppointmentID { get; set; }
 
         [Required]
-        public int OwnerID { get; set; }
+        public string OwnerID { get; set; }
+
+        [ForeignKey("OwnerID")]
+        public ApplicationUser Owner { get; set; }
 
         [Required]
         public int PetID { get; set; }
 
+        [ForeignKey("PetID")]
+        public Pets Pet { get; set; }
+
         [Required]
-        public int VetID { get; set; }
+        public string VetID { get; set; }
+
+        [ForeignKey("VetID")]
+        public ApplicationUser Vet { get; set; }
 
         private DateTime _date;
 
@@ -28,6 +40,10 @@ namespace PawsitiveHealthHub.Models
             set => _date = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0);
         }
 
+        [Required(ErrorMessage = "Please enter the reason.")]
+        [StringLength(200)]
+        public string Reason { get; set; }
+
         public static ValidationResult ValidateAppointmentTime(DateTime date, ValidationContext context)
         {
             var time = date.TimeOfDay;
@@ -37,12 +53,5 @@ namespace PawsitiveHealthHub.Models
             }
             return ValidationResult.Success;
         }
-
-
-        [Required(ErrorMessage = "Please enter the reason.")]
-        [StringLength(200)]
-        public string Reason { get; set; }
-
-
     }
 }

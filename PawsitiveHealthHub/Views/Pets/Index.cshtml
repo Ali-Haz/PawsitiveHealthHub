@@ -1,0 +1,119 @@
+﻿@model PawsitiveHealthHub.PaginatedList<PawsitiveHealthHub.Models.Pets>
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Pet Profiles</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-action="Index" method="get" class="mb-3 d-flex align-items-center gap-2">
+    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by name..." />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a asp-action="Index" class="btn btn-secondary">Clear</a>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+           
+            <th>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["NameSortParm"]"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                    @Html.DisplayNameFor(model => model[0].PetName)
+
+                </a>
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Species)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].AgeYears)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].AgeMonths)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].AgeDays)
+            </th>
+            <th>
+                Medical Records
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           @* <td>
+                @Html.DisplayFor(modelItem => item.Owner.Id)
+            </td> *@
+            <td>
+                @Html.DisplayFor(modelItem => item.PetName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Species)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgeYears)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgeMonths)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgeDays)
+            </td>
+                <td>
+                    <a class="btn btn-sm btn-info"
+                       asp-controller="MedRecords"
+                       asp-action="Index"
+                       asp-route-petId="@item.PetID">
+                        View
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.PetID">Edit</a>
+                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.PetID">Details</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.PetID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<nav>
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                Previous
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.PageIndex of @Model.TotalPages
+            </span>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                Next
+            </a>
+        </li>
+    </ul>
+</nav>
+

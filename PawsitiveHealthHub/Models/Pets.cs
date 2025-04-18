@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PawsitiveHealthHub.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace PawsitiveHealthHub.Models
 {
@@ -8,7 +10,10 @@ namespace PawsitiveHealthHub.Models
         public int PetID { get; set; }
 
         [Required]
-        public int OwnerID { get; set; }
+        public string OwnerID { get; set; }
+
+        [ForeignKey("OwnerID")]
+        public ApplicationUser Owner { get; set; }
 
         [Required(ErrorMessage = "Please enter your pet's name.")]
         [StringLength(50)]
@@ -21,16 +26,20 @@ namespace PawsitiveHealthHub.Models
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Species name can only contain letters and spaces.")]
         public string Species { get; set; }
 
-        // Separate fields for age
         [Display(Name = "Years")]
-        [Range(0, 35, ErrorMessage = "Please enter a valid age.")]
+        [Range(0, 35)]
         public int AgeYears { get; set; } = 0;
+
         [Display(Name = "Months")]
-        [Range(0, 12, ErrorMessage = "Months can only be between 0-12. Otherwise, please use Years.")]
+        [Range(0, 12)]
         public int AgeMonths { get; set; } = 0;
+
         [Display(Name = "Days")]
-        [Range(0, 30, ErrorMessage = "Days can only be between 0-30. Otherwise, please use Months.")]
+        [Range(0, 30)]
         public int AgeDays { get; set; } = 0;
 
+        // Navigation Properties
+        public ICollection<MedRecords> MedRecords { get; set; }
+        public ICollection<Appointments> Appointments { get; set; }
     }
 }

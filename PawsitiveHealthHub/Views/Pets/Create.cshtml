@@ -1,0 +1,64 @@
+﻿@model PawsitiveHealthHub.Models.Pets
+@using Microsoft.AspNetCore.Identity
+@using PawsitiveHealthHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create Pet Profile</h1>
+
+<h4>Pets</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @{
+            var currentUser = await UserManager.GetUserAsync(User);
+        }
+
+        <p><strong>Owner:</strong> @currentUser.FirstName @currentUser.LastName</p>
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="PetName" class="control-label"></label>
+                <input asp-for="PetName" class="form-control" />
+                <span asp-validation-for="PetName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Species" class="control-label"></label>
+                <input asp-for="Species" class="form-control" />
+                <span asp-validation-for="Species" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AgeYears" class="control-label"></label>
+                <input asp-for="AgeYears" class="form-control" />
+                <span asp-validation-for="AgeYears" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AgeMonths" class="control-label"></label>
+                <input asp-for="AgeMonths" class="form-control" />
+                <span asp-validation-for="AgeMonths" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AgeDays" class="control-label"></label>
+                <input asp-for="AgeDays" class="form-control" />
+                <span asp-validation-for="AgeDays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+          
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
