@@ -72,14 +72,16 @@ namespace PawsitiveHealthHub.Areas.Identity.Pages.Account
         public class InputModel
         {
 
-            [Required]
+            [Required(ErrorMessage = "Please enter your First Name.")]
             [StringLength(20, ErrorMessage ="The First Name should have a maximum of 20 characters.")]
-            [Display(Name ="Firstname")]
+            [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "First Name can only contain letters and spaces.")]
+            [Display(Name ="First Name")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Please enter your Last Name.")]
             [StringLength(20, ErrorMessage = "The Last Name should have a maximum of 20 characters.")]
-            [Display(Name = "Lastname")]
+            [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Last Name can only contain letters and spaces.")]
+            [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
 

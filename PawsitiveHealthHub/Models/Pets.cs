@@ -27,15 +27,18 @@ namespace PawsitiveHealthHub.Models
         public string Species { get; set; }
 
         [Display(Name = "Years")]
-        [Range(0, 35)]
+        [Range(0, 35, ErrorMessage = "Age in years must be between 0 and 35.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a whole number.")]
         public int AgeYears { get; set; } = 0;
 
         [Display(Name = "Months")]
-        [Range(0, 12)]
+        [Range(0, 12, ErrorMessage ="Age in months must be between 0 and 12.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a whole number.")]
         public int AgeMonths { get; set; } = 0;
 
         [Display(Name = "Days")]
-        [Range(0, 30)]
+        [Range(0, 30, ErrorMessage ="Age in Years must be between 0 and 30.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a whole number.")]
         public int AgeDays { get; set; } = 0;
 
         // Navigation Properties
