@@ -26,6 +26,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -40,7 +41,7 @@ using (var scope = app.Services.CreateScope())
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-    // Creating roles
+    // Create roles
     string[] roles = { "Owner", "Vet" };
     foreach (var role in roles)
     {
@@ -50,28 +51,37 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    // Creating VET USER
-    string vetEmail = "vet1@hub.com";
-    string vetPassword = "Vet123!";
-    var vetUser = await userManager.FindByEmailAsync(vetEmail);
-    if (vetUser == null)
+    // Create multiple vet users
+    var vets = new List<(string Email, string Password, string FirstName, string LastName)>
+{
+    ("vet1@hub.com", "Vet123!", "Clara", "Williams"),
+    ("vet2@hub.com", "Vet456!", "James", "Thompson"),
+    ("vet3@hub.com", "Vet789!", "Sophia", "Bennett")
+};
+
+    foreach (var vet in vets)
     {
-        vetUser = new ApplicationUser
+        var existingVet = await userManager.FindByEmailAsync(vet.Email);
+        if (existingVet == null)
         {
-            UserName = vetEmail,
-            Email = vetEmail,
-            EmailConfirmed = true,
-            FirstName = "Clara",
-            LastName = "Williams"
-        };
-        var result = await userManager.CreateAsync(vetUser, vetPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(vetUser, "Vet");
+            var newVet = new ApplicationUser
+            {
+                UserName = vet.Email,
+                Email = vet.Email,
+                EmailConfirmed = true,
+                FirstName = vet.FirstName,
+                LastName = vet.LastName
+            };
+            var result = await userManager.CreateAsync(newVet, vet.Password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(newVet, "Vet");
+            }
         }
     }
 
-    // Creating OWNER USER
+
+    // Create owner user
     string ownerEmail = "owner1@hub.com";
     string ownerPassword = "Owner123!";
     var ownerUser = await userManager.FindByEmailAsync(ownerEmail);

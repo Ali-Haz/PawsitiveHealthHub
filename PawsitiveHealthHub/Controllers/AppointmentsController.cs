@@ -65,15 +65,18 @@ namespace PawsitiveHealthHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AppointmentID,OwnerID,PetID,VetID,Date,Reason")] Appointments appointments)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(appointments);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            
             ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id", appointments.OwnerID);
             ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", appointments.PetID);
             ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", appointments.VetID);
+
             return View(appointments);
         }
 
@@ -108,7 +111,7 @@ namespace PawsitiveHealthHub.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

@@ -72,7 +72,7 @@ namespace PawsitiveHealthHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RecordID,PetID,VetID,Diagnosis,Treatment")] MedRecords medRecords)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(medRecords);
                 await _context.SaveChangesAsync();
@@ -113,7 +113,7 @@ namespace PawsitiveHealthHub.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

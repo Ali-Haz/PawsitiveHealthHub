@@ -72,13 +72,13 @@ namespace PawsitiveHealthHub.Areas.Identity.Pages.Account
         public class InputModel
         {
 
-            [Required(ErrorMessage = "Please enter your First Name.")]
+            [Required(ErrorMessage = "Please enter a First Name.")]
             [StringLength(20, ErrorMessage ="The First Name should have a maximum of 20 characters.")]
             [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "First Name can only contain letters and spaces.")]
             [Display(Name ="First Name")]
             public string FirstName { get; set; }
 
-            [Required(ErrorMessage = "Please enter your Last Name.")]
+            [Required(ErrorMessage = "Please enter a Last Name.")]
             [StringLength(20, ErrorMessage = "The Last Name should have a maximum of 20 characters.")]
             [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Last Name can only contain letters and spaces.")]
             [Display(Name = "Last Name")]
@@ -89,7 +89,7 @@ namespace PawsitiveHealthHub.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Please enter an Email.")]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -141,6 +141,7 @@ namespace PawsitiveHealthHub.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+                    await _userManager.AddToRoleAsync(user, "Owner");
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
