@@ -15,8 +15,19 @@ namespace PawsitiveHealthHub.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("LoggedInHome");
+            }
+
+            return View(); // shows the default homepage for non-logged-in users
         }
+
+        public IActionResult LoggedInHome()
+        {
+            return View(); // custom homepage for logged-in users
+        }
+
 
         public IActionResult Privacy()
         {
