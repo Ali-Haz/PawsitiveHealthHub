@@ -4,12 +4,49 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container bg-dark container-left rounded-3">
+    <div class="inner-content">
+<h1 class="text-white custom-h1">@ViewData["Title"]</h1>
+<style>
+    body {
+        background-image: url("/images/PHH_RegisterBg.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .container-left {
+            max-width: 500px;
+            margin-left: 0;
+            padding-left: 15px;
+            padding-right: 15px;
+            box-shadow: 10px 10px 8px -5px #7a6656;
+    }
+
+    input, label, h1, h2 {
+        white-space: nowrap;
+    }
+
+    button {
+            width: 100%;
+            white-space: nowrap;
+            max-width: 100%;
+    }
+
+    .inner-content {
+        padding-left: 4rem;
+    }
+
+    .custom-h1 {
+                
+                padding-left: 5rem;
+    }
+
+</style>
 
 <div class="row">
-    <div class="col-md-4">
+        <div class="col-md-auto">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+            <h2 class="text-light">Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
@@ -37,17 +74,17 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button id="registerSubmit" type="submit" class="btn btn-lg btn-outline-light">Register</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-6 col-md-offset-2">
         <section>
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                         <div>
                             <p>
                                 @foreach (var provider in Model.ExternalLogins!)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                <button type="submit" class="btn btn-primary form-control" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                                 }
                             </p>
                         </div>
@@ -56,6 +93,8 @@
             
         </section>
     </div>
+</div>
+</div>
 </div>
 
 @section Scripts {
