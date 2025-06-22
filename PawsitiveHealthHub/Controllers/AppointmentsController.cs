@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,12 @@ namespace PawsitiveHealthHub.Controllers
     public class AppointmentsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AppointmentsController(AppDbContext context)
+        public AppointmentsController(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Appointments
@@ -50,21 +53,40 @@ namespace PawsitiveHealthHub.Controllers
         }
 
         // GET: Appointments/Create
-        public IActionResult Create()
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> Create()
         {
-            ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID");
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id");
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+
+            ViewData["VetID"] = new SelectList(vets.Select(v => new
+            {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName");
+
+            // Only show pets that belong to the current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewData["PetID"] = new SelectList(_context.Pets
+                .Where(p => p.OwnerID == currentUser.Id)
+                .Select(p => new { p.PetID, p.PetName }),
+                "PetID", "PetName");
+
             return View();
         }
+
+
 
         // POST: Appointments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AppointmentID,OwnerID,PetID,VetID,Date,Reason")] Appointments appointments)
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> Create([Bind("AppointmentID,PetID,VetID,Date,Reason")] Appointments appointments)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            appointments.OwnerID = currentUser.Id; // Automatically set OwnerID
+
             if (!ModelState.IsValid)
             {
                 _context.Add(appointments);
@@ -72,30 +94,50 @@ namespace PawsitiveHealthHub.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
-            ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id", appointments.OwnerID);
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", appointments.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", appointments.VetID);
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+
+            ViewData["VetID"] = new SelectList(vets.Select(v => new
+            {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", appointments.VetID);
+
+            ViewData["PetID"] = new SelectList(_context.Pets
+                .Where(p => p.OwnerID == currentUser.Id)
+                .Select(p => new { p.PetID, p.PetName }),
+                "PetID", "PetName", appointments.PetID);
 
             return View(appointments);
         }
+
 
         // GET: Appointments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var appointments = await _context.Appointments.FindAsync(id);
             if (appointments == null)
-            {
                 return NotFound();
-            }
-            ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id", appointments.OwnerID);
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", appointments.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", appointments.VetID);
+
+            var owners = await _userManager.GetUsersInRoleAsync("Owner");
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+
+            ViewData["OwnerID"] = new SelectList(owners.Select(o => new {
+                o.Id,
+                FullName = o.FirstName + " " + o.LastName
+            }), "Id", "FullName", appointments.OwnerID);
+
+            ViewData["VetID"] = new SelectList(vets.Select(v => new {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", appointments.VetID);
+
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new {
+                p.PetID,
+                p.PetName
+            }), "PetID", "Name", appointments.PetID);
             return View(appointments);
         }
 
@@ -117,6 +159,7 @@ namespace PawsitiveHealthHub.Controllers
                 {
                     _context.Update(appointments);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,13 +172,29 @@ namespace PawsitiveHealthHub.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id", appointments.OwnerID);
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", appointments.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", appointments.VetID);
+
+            var owners = await _userManager.GetUsersInRoleAsync("Owner");
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+
+            ViewData["OwnerID"] = new SelectList(owners.Select(o => new {
+                o.Id,
+                FullName = o.FirstName + " " + o.LastName
+            }), "Id", "FullName", appointments.OwnerID);
+
+            ViewData["VetID"] = new SelectList(vets.Select(v => new {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", appointments.VetID);
+
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new {
+                p.PetID,
+                p.PetName
+            }), "PetID", "PetName", appointments.PetID);
+
             return View(appointments);
         }
+
 
         // GET: Appointments/Delete/5
         public async Task<IActionResult> Delete(int? id)

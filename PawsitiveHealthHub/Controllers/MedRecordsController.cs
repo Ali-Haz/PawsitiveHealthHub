@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,12 @@ namespace PawsitiveHealthHub.Controllers
     public class MedRecordsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MedRecordsController(AppDbContext context)
+        public MedRecordsController(AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: MedRecords
@@ -58,12 +61,26 @@ namespace PawsitiveHealthHub.Controllers
         }
 
         // GET: MedRecords/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID");
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id");
+            // Get list of vets only
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+
+            // Set pet names
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new {
+                p.PetID,
+                p.PetName
+            }), "PetID", "PetName");
+
+            // Set vet names
+            ViewData["VetID"] = new SelectList(vets.Select(v => new {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName");
+
             return View();
         }
+
 
         // POST: MedRecords/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -78,8 +95,22 @@ namespace PawsitiveHealthHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", medRecords.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", medRecords.VetID);
+
+            // Rebuild pet name list
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new
+            {
+                p.PetID,
+                p.PetName
+            }), "PetID", "PetName", medRecords.PetID);
+
+            // Rebuild vet name list
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+            ViewData["VetID"] = new SelectList(vets.Select(v => new
+            {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", medRecords.VetID);
+
             return View(medRecords);
         }
 
@@ -96,10 +127,25 @@ namespace PawsitiveHealthHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", medRecords.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", medRecords.VetID);
+
+            // Pet dropdown with names
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new
+            {
+                p.PetID,
+                p.PetName
+            }), "PetID", "PetName", medRecords.PetID);
+
+            // Vet dropdown with names
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+            ViewData["VetID"] = new SelectList(vets.Select(v => new
+            {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", medRecords.VetID);
+
             return View(medRecords);
         }
+
 
         // POST: MedRecords/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -133,10 +179,25 @@ namespace PawsitiveHealthHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PetID"] = new SelectList(_context.Pets, "PetID", "OwnerID", medRecords.PetID);
-            ViewData["VetID"] = new SelectList(_context.Users, "Id", "Id", medRecords.VetID);
+
+            // Pet dropdown with pet names
+            ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new
+            {
+                p.PetID,
+                p.PetName
+            }), "PetID", "PetName", medRecords.PetID);
+
+            // Vet dropdown with names
+            var vets = await _userManager.GetUsersInRoleAsync("Vet");
+            ViewData["VetID"] = new SelectList(vets.Select(v => new
+            {
+                v.Id,
+                FullName = "Dr. " + v.LastName
+            }), "Id", "FullName", medRecords.VetID);
+
             return View(medRecords);
         }
+
 
         // GET: MedRecords/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -2,20 +2,42 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="d-flex flex-column justify-content-center align-items-start text-black h-100 px-5" style="max-width: 800px;">
-    <h1 class="display-4 mb-4">Welcome to Pawsitive Health Hub</h1>
-    <h5 class="mb-4">
-        <p>Your go-to online hub for your pet’s health and needs.</p>
-        <p>
-            Create a pet profile, check on your pet’s medical reports,<br />
-            and book appointments with professionals ready to care<br />
-            for your furry friend!
-        </p>
-        <p>Log in or register an account to get started.</p>
-    </h5>
-    <div>
-        <a href="/Identity/Account/Login" class="btn btn-primary btn-xl me-3">Log In</a>
-        <a href="/Identity/Account/Register" class="btn btn-outline-dark btn-xl">Register</a>
+<style>
+    body {
+        background-color: #15263b;
+    }
+</style>
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="position: relative;">
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="2500">
+            <img src="images/PHH_homepage1.jpg" class="d-block w-100 carousel-img" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="2500">
+            <img src="images/PHH_homepage2.jpg" class="d-block w-100 carousel-img" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="2500">
+            <img src="images/PHH_homepage3.jpg" class="d-block w-100 carousel-img" alt="...">
+        </div>
+    </div>
+
+    
+    <div class="overlay-content">
+        <h1 class="display-4 mb-4 text-white">Welcome to Pawsitive Health Hub</h1>
+        <h5 class="mb-4 text-white">
+            <p>Your go-to online hub for your pet’s health and needs.</p>
+            <p>
+                Create a pet profile, check on your pet’s medical reports,<br />
+                and book appointments with professionals ready to care<br />
+                for your furry friend!
+            </p>
+            <p>Log in or register an account to get started.</p>
+        </h5>
+        <div>
+            <a href="/Identity/Account/Login" class="btn btn-light btn-xl me-3">Log In</a>
+            <a href="/Identity/Account/Register" class="btn btn-outline-light btn-xl">Register</a>
+        </div>
     </div>
 </div>
+
 
