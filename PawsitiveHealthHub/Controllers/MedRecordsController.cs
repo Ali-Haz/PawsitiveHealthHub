@@ -23,22 +23,41 @@ namespace PawsitiveHealthHub.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+       
         // GET: MedRecords
-        public async Task<IActionResult> Index(int? petId)
+        public async Task<IActionResult> Index(string sortOrder, string petSearch, string vetSearch, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["PetSortParm"] = sortOrder == "pet_asc" ? "pet_desc" : "pet_asc";
+
+            ViewData["CurrentPetSearch"] = petSearch;
+            ViewData["CurrentVetSearch"] = vetSearch;
+
             var records = _context.MedRecords
                 .Include(m => m.Pet)
                 .Include(m => m.Vet)
                 .AsQueryable();
 
-            if (petId.HasValue)
+            if (!string.IsNullOrEmpty(petSearch))
             {
-                records = records.Where(m => m.PetID == petId.Value);
+                records = records.Where(r => r.Pet.PetName.Contains(petSearch));
             }
 
-            return View(await records.ToListAsync());
+            if (!string.IsNullOrEmpty(vetSearch))
+            {
+                records = records.Where(r => (r.Vet.FirstName + " " + r.Vet.LastName).Contains(vetSearch));
+            }
+
+            records = sortOrder switch
+            {
+                "pet_desc" => records.OrderByDescending(r => r.Pet.PetName),
+                _ => records.OrderBy(r => r.Pet.PetName)
+            };
+
+            int pageSize = 5;
+            return View(await PaginatedList<MedRecords>.CreateAsync(records.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
         // GET: MedRecords/Details/5
         public async Task<IActionResult> Details(int? id)

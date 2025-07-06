@@ -8,33 +8,20 @@
 <h1>Details</h1>
 
 <div>
-    <h4>MedRecords</h4>
+    <h4>Medical Records</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Pet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Pet.OwnerID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Vet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Vet.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Diagnosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Diagnosis)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Treatment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Treatment)
-        </dd>
+        <dt class="col-sm-2">Pet</dt>
+        <dd class="col-sm-10">@Model.Pet?.PetName</dd>
+
+        <dt class="col-sm-2">Vet</dt>
+        <dd class="col-sm-10">@("Dr. " + Model.Vet?.LastName)</dd>
+
+        <dt class="col-sm-2">Diagnosis</dt>
+        <dd class="col-sm-10">@Model.Diagnosis</dd>
+
+        <dt class="col-sm-2">Treatment</dt>
+        <dd class="col-sm-10">@Model.Treatment</dd>
     </dl>
 </div>
 <div>

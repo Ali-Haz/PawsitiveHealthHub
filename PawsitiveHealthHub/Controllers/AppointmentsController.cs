@@ -25,11 +25,36 @@ namespace PawsitiveHealthHub.Controllers
         }
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string petSearch, string vetSearch, int? pageNumber)
         {
-            var appDbContext = _context.Appointments.Include(a => a.Owner).Include(a => a.Pet).Include(a => a.Vet);
-            return View(await appDbContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["PetSortParm"] = sortOrder == "pet_asc" ? "pet_desc" : "pet_asc";
+            ViewData["CurrentPetSearch"] = petSearch;
+            ViewData["CurrentVetSearch"] = vetSearch;
+
+            var appointments = _context.Appointments
+                .Include(a => a.Owner)
+                .Include(a => a.Pet)
+                .Include(a => a.Vet)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(petSearch))
+                appointments = appointments.Where(a => a.Pet.PetName.Contains(petSearch));
+
+            if (!string.IsNullOrEmpty(vetSearch))
+                appointments = appointments.Where(a => (a.Vet.FirstName + " " + a.Vet.LastName).Contains(vetSearch));
+
+            appointments = sortOrder switch
+            {
+                "pet_desc" => appointments.OrderByDescending(a => a.Pet.PetName),
+                _ => appointments.OrderBy(a => a.Pet.PetName)
+            };
+
+            int pageSize = 5;
+            return View(await PaginatedList<Appointments>.CreateAsync(appointments.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
+
 
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -117,7 +142,12 @@ namespace PawsitiveHealthHub.Controllers
             if (id == null)
                 return NotFound();
 
-            var appointments = await _context.Appointments.FindAsync(id);
+            var appointments = await _context.Appointments
+                .Include(a => a.Owner)
+                .Include(a => a.Pet)
+                .Include(a => a.Vet)
+                .FirstOrDefaultAsync(a => a.AppointmentID == id);
+
             if (appointments == null)
                 return NotFound();
 
@@ -137,9 +167,11 @@ namespace PawsitiveHealthHub.Controllers
             ViewData["PetID"] = new SelectList(_context.Pets.Select(p => new {
                 p.PetID,
                 p.PetName
-            }), "PetID", "Name", appointments.PetID);
+            }), "PetID", "PetName", appointments.PetID);
+
             return View(appointments);
         }
+
 
         // POST: Appointments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

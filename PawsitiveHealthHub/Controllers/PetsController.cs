@@ -28,30 +28,24 @@ namespace PawsitiveHealthHub.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
             ViewData["CurrentFilter"] = searchString;
 
-            var pets = from p in _context.Pets.Include(p => p.Owner)
-                       select p;
+            var pets = _context.Pets.Include(p => p.Owner).AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
+            if (!string.IsNullOrEmpty(searchString))
                 pets = pets.Where(p => p.PetName.Contains(searchString));
-            }
 
-            switch (sortOrder)
+            pets = sortOrder switch
             {
-                case "name_desc":
-                    pets = pets.OrderByDescending(p => p.PetName);
-                    break;
-                default:
-                    pets = pets.OrderBy(p => p.PetName);
-                    break;
-            }
+                "name_desc" => pets.OrderByDescending(p => p.PetName),
+                _ => pets.OrderBy(p => p.PetName)
+            };
 
             int pageSize = 5;
             return View(await PaginatedList<Pets>.CreateAsync(pets.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
 
         // GET: Pets/Details/5
@@ -108,17 +102,23 @@ namespace PawsitiveHealthHub.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var pets = await _context.Pets.FindAsync(id);
-            if (pets == null)
-            {
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
                 return NotFound();
-            }
-            ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id", pets.OwnerID);
-            return View(pets);
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+                return Unauthorized();
+
+            // Sets the OwnerID to the current user's ID
+            pet.OwnerID = currentUser.Id;
+
+            // Owner full name is displayed
+            ViewData["OwnerFullName"] = currentUser.FirstName + " " + currentUser.LastName;
+
+            return View(pet);
         }
 
         // POST: Pets/Edit/5

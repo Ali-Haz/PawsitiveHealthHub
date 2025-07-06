@@ -7,7 +7,7 @@
 
 <h1>Edit</h1>
 
-<h4>MedRecords</h4>
+<h4>Medical Records</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,12 +15,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="RecordID" />
             <div class="form-group">
-                <label asp-for="PetID" class="control-label"></label>
+                <label asp-for="PetID" class="control-label">Pet Name</label>
                 <select asp-for="PetID" class="form-control" asp-items="ViewBag.PetID"></select>
                 <span asp-validation-for="PetID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VetID" class="control-label"></label>
+                <label asp-for="VetID" class="control-label">Vet</label>
                 <select asp-for="VetID" class="form-control" asp-items="ViewBag.VetID"></select>
                 <span asp-validation-for="VetID" class="text-danger"></span>
             </div>

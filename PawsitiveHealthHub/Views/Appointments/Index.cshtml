@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PawsitiveHealthHub.Models.Appointments>
+﻿@model PaginatedList<PawsitiveHealthHub.Models.Appointments>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,20 +10,50 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index" method="get" class="mb-3 row g-2 align-items-center">
+    <div class="col-auto">
+        <input type="text" name="petSearch" value="@ViewData["CurrentPetSearch"]" class="form-control" placeholder="Search pet..." />
+    </div>
+    <div class="col-auto">
+        <input type="text" name="vetSearch" value="@ViewData["CurrentVetSearch"]" class="form-control" placeholder="Search vet..." />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Pet)
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["PetSortParm"]"
+                   asp-route-petSearch="@ViewData["CurrentPetSearch"]"
+                   asp-route-vetSearch="@ViewData["CurrentVetSearch"]">
+                    Pet
+                    @if ((string)ViewData["CurrentSort"] == "pet_desc")
+                    {
+                        <span>↓</span>
+                        ;
+                    }
+                    else if ((string)ViewData["CurrentSort"] == "pet_asc")
+                    {
+
+                        <span>↑</span>
+                        ;
+                    }
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Vet)
+                @Html.DisplayNameFor(model => model[0].Vet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model[0].Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Reason)
+                @Html.DisplayNameFor(model => model[0].Reason)
             </th>
             <th></th>
         </tr>
@@ -54,3 +84,35 @@
     </tbody>
 
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<nav>
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-petSearch="@ViewData["CurrentPetSearch"]"
+               asp-route-vetSearch="@ViewData["CurrentVetSearch"]">
+                Previous
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.PageIndex of @Model.TotalPages
+            </span>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-petSearch="@ViewData["CurrentPetSearch"]"
+               asp-route-vetSearch="@ViewData["CurrentVetSearch"]">
+                Next
+            </a>
+        </li>
+    </ul>
+</nav>

@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Edit Appointment</h1>
 
 <h4>Appointments</h4>
 <hr />
@@ -15,17 +15,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AppointmentID" />
             <div class="form-group">
-                <label asp-for="OwnerID" class="control-label"></label>
-                <select asp-for="OwnerID" class="form-control" asp-items="ViewBag.OwnerID"></select>
-                <span asp-validation-for="OwnerID" class="text-danger"></span>
+                <label asp-for="OwnerID" class="control-label">Owner</label>
+                <input class="form-control" value="@Model.Owner.FirstName @Model.Owner.LastName" readonly />
+                <input type="hidden" asp-for="OwnerID" />
             </div>
             <div class="form-group">
-                <label asp-for="PetID" class="control-label"></label>
+                <label asp-for="PetID" class="control-label">Pet Name</label>
                 <select asp-for="PetID" class="form-control" asp-items="ViewBag.PetID"></select>
                 <span asp-validation-for="PetID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VetID" class="control-label"></label>
+                <label asp-for="VetID" class="control-label">Vet</label>
                 <select asp-for="VetID" class="form-control" asp-items="ViewBag.VetID"></select>
                 <span asp-validation-for="VetID" class="text-danger"></span>
             </div>
