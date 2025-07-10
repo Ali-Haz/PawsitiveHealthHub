@@ -14,7 +14,7 @@
 
 <form asp-action="Index" method="get" class="mb-3 d-flex align-items-center gap-2">
     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by pet name..." />
-    <button type="submit" class="btn btn-dark">Search</button>
+    <button type="submit" class="btn btn-primary">Search</button>
     <a asp-action="Index" class="btn btn-secondary">Clear</a>
 </form>
 
@@ -87,8 +87,8 @@
                     </a>
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.PetID">Edit</a>
-                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.PetID">Details</a>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.PetID">Edit</a> |
+                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.PetID">Details</a> |
                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.PetID">Delete</a>
                 </td>
             </tr>

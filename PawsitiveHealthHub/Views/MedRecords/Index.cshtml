@@ -12,8 +12,8 @@
 </p>
 
 <form asp-action="Index" method="get" class="d-flex align-items-center gap-2 mb-3">
-    <input type="text" name="petSearch" value="@ViewData["CurrentPetSearch"]" class="form-control w-25" placeholder="Search Pet..." />
-    <input type="text" name="vetSearch" value="@ViewData["CurrentVetSearch"]" class="form-control w-25" placeholder="Search Vet..." />
+    <input type="text" name="petSearch" value="@ViewData["CurrentPetSearch"]" class="form-control w-25" placeholder="Search pet..." />
+    <input type="text" name="vetSearch" value="@ViewData["CurrentVetSearch"]" class="form-control w-25" placeholder="Search vet..." />
     <button type="submit" class="btn btn-primary">Search</button>
     <a asp-action="Index" class="btn btn-secondary">Clear</a>
 </form>
@@ -69,9 +69,9 @@
                     @item.Treatment
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.RecordID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.RecordID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RecordID">Delete</a>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.RecordID">Edit</a> |
+                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.RecordID">Details</a> |
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.RecordID">Delete</a>
                 </td>
             </tr>
         }
