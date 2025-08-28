@@ -1,0 +1,175 @@
+﻿@{
+    ViewData["Title"] = "About Pawsitive Health Hub";
+}
+
+<style>
+    body {
+        background-color: #15263b;
+    }
+
+    .section-bg {
+        background: #ffffff;
+        color: #000000;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .icon-box {
+        border-radius: 16px;
+        background: transparent;
+        color: #ffffff;
+        padding: 20px;
+        border: 2px solid #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .icon-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
+        }
+
+    .icon {
+        font-size: 2.5rem;
+        color: #ffffff;
+    }
+
+    .img-section {
+        border-radius: 1rem;
+        object-fit: cover;
+        max-height: 300px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    ul.list-group li {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+    }
+
+    .section-dark {
+        background-color: #15263b;
+        color: #ffffff;
+        padding: 2rem;
+        border-radius: 20px;
+    }
+
+        .section-dark h3, .section-dark p {
+            color: #ffffff;
+        }
+
+    .text-highlight {
+        color: #15263b;
+        font-weight: 600;
+    }
+
+    .welcome-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .welcome-box {
+        background-color: #fff;
+        max-width: 1320px;
+        width: 100%;
+        border-radius: 16px;
+        padding: 2rem;
+    }
+
+    .wide-crop-img {
+        width: 100%;
+        max-height: 500px;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+        .wide-crop-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+</style>
+
+
+<section class="py-5 bg-darkblue">
+    <div class="welcome-wrapper">
+        <div class="welcome-box p-4 text-center shadow">
+            <h1 class="display-5 fw-bold text-black">Welcome to Pawsitive Health Hub</h1>
+            <p class="lead text-black">Where your pet's wellness is our priority</p>
+            <div class="wide-crop-img mt-4">
+                <img src="~/images/PHH_userhomepage1.jpg" alt="Dog playing in grass" class="img-fluid rounded shadow" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <img src="~/images/PHH_userhomepage2.jpg" alt="Pet owner hugging rabbit" class="img-fluid rounded shadow rounded-img" />
+        </div>
+        <div class="col-md-6">
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="fw-semibold text-black">Our Purpose</h2>
+                <p class="text-black">
+                    At <strong>Pawsitive Health Hub</strong>, we believe that pets are family.
+                    Our platform was built to ensure that every pet owner has access to trusted care and streamlined health management, all in one place.
+                </p>
+                <p class="text-black">
+                    Whether you're scheduling checkups, tracking health records, or simply staying on top of your pet’s wellness, we’re here to support you.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="text-center mb-4">
+    <h2 class="fw-bold text-white"> What We Offer</h2>
+    <p class="text-white">Comprehensive services designed for owners, vets, and most importantly, pets</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="icon-box text-center">
+            <div class="icon mb-3"><i class="bi bi-calendar-check"></i></div>
+            <h5 class="fw-bold">Appointment Booking</h5>
+            <p>Seamlessly schedule visits with trusted veterinarians, tailored to your availability and pet’s needs.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="icon-box text-center">
+            <div class="icon mb-3"><i class="bi bi-journal-medical"></i></div>
+            <h5 class="fw-bold">Medical Records</h5>
+            <p>Access diagnosis, treatment history, and health records which are all securely stored and easy to navigate.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="icon-box text-center">
+            <div class="icon mb-3"><i class="bi bi-person-vcard"></i></div>
+            <h5 class="fw-bold">Pet Profiles</h5>
+            <p>Create profiles for each of your pets including age, species, and medical history tracking.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="icon-box text-center">
+            <div class="icon mb-3"><i class="bi bi-search-heart"></i></div>
+            <h5 class="fw-bold">Smart Search & Sorting</h5>
+            <p>Quickly find appointments, pets, and records with search filters and alphabetical sorting tools.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="icon-box text-center">
+            <div class="icon mb-3"><i class="bi bi-heart-pulse-fill"></i></div>
+            <h5 class="fw-bold">Health & Wellness Support</h5>
+            <p>Designed to promote regular care and early intervention; helping pets live longer, happier lives.</p>
+        </div>
+    </div>
+</div>
+</section>
