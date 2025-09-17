@@ -23,7 +23,7 @@ namespace PawsitiveHealthHub.Controllers
             _context = context;
             _userManager = userManager;
         }
-       
+
         // GET: MedRecords
         public async Task<IActionResult> Index(string sortOrder, string petSearch, string vetSearch, int? pageNumber)
         {
@@ -33,9 +33,14 @@ namespace PawsitiveHealthHub.Controllers
             ViewData["CurrentPetSearch"] = petSearch;
             ViewData["CurrentVetSearch"] = vetSearch;
 
+            // Gets the current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Only includes medical records for pets owned by this user
             var records = _context.MedRecords
                 .Include(m => m.Pet)
                 .Include(m => m.Vet)
+                .Where(r => r.Pet.OwnerID == userId)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(petSearch))
@@ -59,6 +64,7 @@ namespace PawsitiveHealthHub.Controllers
         }
 
 
+
         // GET: MedRecords/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -80,6 +86,7 @@ namespace PawsitiveHealthHub.Controllers
         }
 
         // GET: MedRecords/Create
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> Create()
         {
             // Get list of vets only
@@ -106,6 +113,7 @@ namespace PawsitiveHealthHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> Create([Bind("RecordID,PetID,VetID,Diagnosis,Treatment")] MedRecords medRecords)
         {
             if (!ModelState.IsValid)
@@ -134,6 +142,7 @@ namespace PawsitiveHealthHub.Controllers
         }
 
         // GET: MedRecords/Edit/5
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -171,6 +180,7 @@ namespace PawsitiveHealthHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> Edit(int id, [Bind("RecordID,PetID,VetID,Diagnosis,Treatment")] MedRecords medRecords)
         {
             if (id != medRecords.RecordID)
@@ -219,6 +229,7 @@ namespace PawsitiveHealthHub.Controllers
 
 
         // GET: MedRecords/Delete/5
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -241,6 +252,7 @@ namespace PawsitiveHealthHub.Controllers
         // POST: MedRecords/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Vet")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var medRecords = await _context.MedRecords.FindAsync(id);

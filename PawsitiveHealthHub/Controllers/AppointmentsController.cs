@@ -32,10 +32,15 @@ namespace PawsitiveHealthHub.Controllers
             ViewData["CurrentPetSearch"] = petSearch;
             ViewData["CurrentVetSearch"] = vetSearch;
 
+            // Gets the current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Only includes appointments for this user
             var appointments = _context.Appointments
                 .Include(a => a.Owner)
                 .Include(a => a.Pet)
                 .Include(a => a.Vet)
+                .Where(a => a.OwnerID == userId)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(petSearch))
@@ -53,6 +58,7 @@ namespace PawsitiveHealthHub.Controllers
             int pageSize = 5;
             return View(await PaginatedList<Appointments>.CreateAsync(appointments.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
 
 

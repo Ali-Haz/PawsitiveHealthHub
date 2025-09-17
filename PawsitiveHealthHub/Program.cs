@@ -78,30 +78,40 @@ using (var scope = app.Services.CreateScope())
                 await userManager.AddToRoleAsync(newVet, "Vet");
             }
         }
-    }
+        else
+        {
+            // To make sure existing vet is assigned the Vet role
+            var userRoles = await userManager.GetRolesAsync(existingVet);
+            if (!userRoles.Contains("Vet"))
+            {
+                await userManager.AddToRoleAsync(existingVet, "Vet");
+            }
+        }
 
 
-    // Create owner user
-    string ownerEmail = "owner1@hub.com";
-    string ownerPassword = "Owner123!";
-    var ownerUser = await userManager.FindByEmailAsync(ownerEmail);
-    if (ownerUser == null)
-    {
-        ownerUser = new ApplicationUser
+
+        // Create owner user
+        string ownerEmail = "owner1@hub.com";
+        string ownerPassword = "Owner123!";
+        var ownerUser = await userManager.FindByEmailAsync(ownerEmail);
+        if (ownerUser == null)
         {
-            UserName = ownerEmail,
-            Email = ownerEmail,
-            EmailConfirmed = true,
-            FirstName = "Max",
-            LastName = "Davis"
-        };
-        var result = await userManager.CreateAsync(ownerUser, ownerPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(ownerUser, "Owner");
+            ownerUser = new ApplicationUser
+            {
+                UserName = ownerEmail,
+                Email = ownerEmail,
+                EmailConfirmed = true,
+                FirstName = "Max",
+                LastName = "Davis"
+            };
+            var result = await userManager.CreateAsync(ownerUser, ownerPassword);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(ownerUser, "Owner");
+            }
         }
     }
+
+
+    app.Run();
 }
-
-
-app.Run();

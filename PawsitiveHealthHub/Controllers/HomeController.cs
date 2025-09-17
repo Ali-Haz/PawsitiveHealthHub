@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PawsitiveHealthHub.Models;
+using System.Diagnostics;
 
 namespace PawsitiveHealthHub.Controllers
 {
@@ -12,6 +12,7 @@ namespace PawsitiveHealthHub.Controllers
         {
             _logger = logger;
         }
+
 
         public IActionResult Index()
         {

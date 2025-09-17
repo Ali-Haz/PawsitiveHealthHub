@@ -31,7 +31,14 @@ namespace PawsitiveHealthHub.Controllers
             ViewData["NameSortParm"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
             ViewData["CurrentFilter"] = searchString;
 
-            var pets = _context.Pets.Include(p => p.Owner).AsQueryable();
+            // Gets current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Only includes pets owned by the logged-in user
+            var pets = _context.Pets
+                .Include(p => p.Owner)
+                .Where(p => p.OwnerID == userId)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
                 pets = pets.Where(p => p.PetName.Contains(searchString));
@@ -45,6 +52,7 @@ namespace PawsitiveHealthHub.Controllers
             int pageSize = 5;
             return View(await PaginatedList<Pets>.CreateAsync(pets.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
 
 
