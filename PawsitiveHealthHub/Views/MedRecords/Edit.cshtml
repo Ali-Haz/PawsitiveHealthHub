@@ -15,6 +15,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="RecordID" />
             <div class="form-group">
+                <label class="control-label">Owner</label>
+                <select id="OwnerDropdown" class="form-control" asp-items="ViewBag.OwnerID"></select>
+            </div>
+            <div class="form-group">
                 <label asp-for="PetID" class="control-label">Pet Name</label>
                 <select asp-for="PetID" class="form-control" asp-items="ViewBag.PetID"></select>
                 <span asp-validation-for="PetID" class="text-danger"></span>

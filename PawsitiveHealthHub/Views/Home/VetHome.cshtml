@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using PawsitiveHealthHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Vet Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string firstName = "";
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            firstName = user.FirstName;
+        }
+    }
+}
+
+    <style>
+        body {
+            background-color: #15263b;
+        }
+
+        .homepage-section {
+            border: 1px solid white;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+            .homepage-section h1,
+            .homepage-section h2 {
+                color: white;
+            }
+
+            .homepage-section p {
+                color: #f0f0f0;
+            }
+    </style>
+}
+
+<div class="container py-5">
+    <!-- Welcome Banner -->
+    <div class="homepage-section">
+        <h1>Welcome back, Dr. @firstName!</h1>
+        <p>You're logged in to your vet dashboard.</p>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="homepage-section">
+        <h2>Today's Appointments</h2>
+        <p>You have no appointments scheduled for today.</p>
+    </div>
+
+    <!-- Recently Updated Medical Records -->
+    <div class="homepage-section">
+        <h2>Recently Updated Medical Records</h2>
+        <p>No medical record updates found.</p>
+    </div>
+
+    <!-- Clinic Notes -->
+    <div class="homepage-section">
+        <h2>Clinic Announcements</h2>
+        <p>Please remember to update vaccination records after each appointment. Stay hydrated and thank you for your hard work!</p>
+    </div>
+</div>

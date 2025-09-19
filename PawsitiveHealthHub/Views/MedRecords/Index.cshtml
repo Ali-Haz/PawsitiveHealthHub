@@ -17,7 +17,7 @@
 @if (isVet)
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-outline-light">Create New</a>
     </p>
 }
 
@@ -31,22 +31,23 @@
 <table class="table">
     <thead>
         <tr>
+            @if (isVet)
+            {
+                <th>Owner</th>
+            }
             <th>
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["PetSortParam"]"
+                   asp-route-sortOrder="@ViewData["PetSortParm"]"
                    asp-route-petSearch="@ViewData["CurrentPetSearch"]"
                    asp-route-vetSearch="@ViewData["CurrentVetSearch"]">
                     Pet
                     @if ((string)ViewData["CurrentSort"] == "pet_desc")
                     {
                         <span>↓</span>
-                        ;
                     }
                     else if ((string)ViewData["CurrentSort"] == "pet_asc")
                     {
-
                         <span>↑</span>
-                        ;
                     }
                 </a>
             </th>
@@ -66,20 +67,16 @@
         @foreach (var item in Model)
         {
             <tr>
+                @if (isVet)
+                {
+                    <td>@item.Pet.Owner?.FirstName @item.Pet.Owner?.LastName</td>
+                }
+                <td>@item.Pet?.PetName</td>
+                <td>@("Dr. " + item.Vet?.LastName)</td>
+                <td>@item.Diagnosis</td>
+                <td>@item.Treatment</td>
                 <td>
-                    @item.Pet?.PetName
-                </td>
-                <td>
-                    @("Dr. " + item.Vet?.LastName)
-                </td>
-                <td>
-                    @item.Diagnosis
-                </td>
-                <td>
-                    @item.Treatment
-                </td>
-                <td>
-                    @if(isVet)
+                    @if (isVet)
                     {
                         <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.RecordID">Edit</a>
                         <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.RecordID">Details</a>
@@ -93,8 +90,8 @@
             </tr>
         }
     </tbody>
-
 </table>
+
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";

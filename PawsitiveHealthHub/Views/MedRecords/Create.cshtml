@@ -1,4 +1,6 @@
 ﻿@model PawsitiveHealthHub.Models.MedRecords
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Create";
@@ -7,41 +9,86 @@
 
 <h1>Create</h1>
 
-<h4>MedRecords</h4>
+<h4>Medical Record</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="PetID" class="control-label">Pet Name</label>
-                <select asp-for="PetID" class ="form-control" asp-items="ViewBag.PetID"></select>
+                <label for="OwnerID">Owner</label>
+                <select id="OwnerID" class="form-control" required>
+                    <option value="">-- Select Owner --</option>
+                    @foreach (var owner in ViewBag.Owners as List<SelectListItem>)
+                    {
+                        <option value="@owner.Value">@owner.Text</option>
+                    }
+                </select>
             </div>
+
+            <div class="form-group">
+                <label asp-for="PetID" class="control-label">Pet</label>
+                <select asp-for="PetID" class="form-control" id="PetID">
+                    <option value="">-- Select Pet --</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label asp-for="VetID" class="control-label">Vet</label>
-                <select asp-for="VetID" class ="form-control" asp-items="ViewBag.VetID"></select>
+                <select asp-for="VetID" class="form-control" asp-items="ViewBag.VetID"></select>
             </div>
+
             <div class="form-group">
                 <label asp-for="Diagnosis" class="control-label"></label>
                 <input asp-for="Diagnosis" class="form-control" />
                 <span asp-validation-for="Diagnosis" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Treatment" class="control-label"></label>
                 <input asp-for="Treatment" class="form-control" />
                 <span asp-validation-for="Treatment" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
+<div class="mt-3">
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('OwnerID').addEventListener('change', function () {
+            const ownerId = this.value;
+            const petDropdown = document.getElementById('PetID');
+
+            petDropdown.innerHTML = '<option>Loading...</option>';
+
+            fetch('/MedRecords/GetPetsByOwner?ownerId=' + ownerId)
+                .then(response => response.json())
+                .then(data => {
+                    petDropdown.innerHTML = '<option value="">-- Select Pet --</option>';
+                    data.forEach(pet => {
+                        const option = document.createElement('option');
+                        option.value = pet.petID;
+                        option.text = pet.petName;
+                        petDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching pets:', error);
+                    petDropdown.innerHTML = '<option value="">-- Error loading pets --</option>';
+                });
+        });
+    </script>
 }

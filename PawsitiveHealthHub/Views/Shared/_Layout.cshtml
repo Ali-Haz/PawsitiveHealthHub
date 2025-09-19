@@ -34,9 +34,16 @@
 
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Pets" asp-action="Index">Pet Profiles</a>
-                            </li>
+                            var isVet = User.IsInRole("Vet");
+
+                            @* Show Pet Profiles only if NOT Vet *@
+                            if (!isVet)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Pets" asp-action="Index">Pet Profiles</a>
+                                </li>
+                            }
+
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Appointments" asp-action="Index">Appointments</a>
                             </li>
@@ -44,6 +51,7 @@
                                 <a class="nav-link text-light" asp-controller="MedRecords" asp-action="Index">Medical Records</a>
                             </li>
                         }
+
                     </ul>
                 </div>
                 <partial name="_LoginPartial"/>
@@ -101,7 +109,7 @@
                         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                             <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
                             <p><i class="fas fa-home me-3"></i> 123 Pet St, Wellington, NZ</p>
-                            <p><i class="fas fa-envelope me-3"></i> contact@pawsitivehealth.com</p>
+                            <p><i class="fas fa-envelope me-3"></i> PHHub@support.com</p>
                             <p><i class="fas fa-phone me-3"></i> +64 123 456 789</p>
                         </div>
                     </div>
